@@ -1,12 +1,14 @@
 {
-  "name": "empty_project",
+  "name": "cheese-heist",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "validate": "node scripts/validate-levels.ts",
+    "test": "node scripts/validate-levels.ts && node scripts/sim-test.ts"
   },
   "devDependencies": {
     "typescript": "~6.0.2",
