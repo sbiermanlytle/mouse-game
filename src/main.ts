@@ -1,3 +1,4 @@
+// Game entry point.
 // Bootstrap, screens (menu / play / pause / level complete), progress
 // persistence and the main loop.
 
