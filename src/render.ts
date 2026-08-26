@@ -700,7 +700,7 @@ function drawDebug(ctx: CanvasRenderingContext2D, game: Game) {
 
 // ---- HUD -----------------------------------------------------------------------
 
-export function drawHud(ctx: CanvasRenderingContext2D, game: Game, view: View, layout: HudLayout, input: InputManager, levelName: string) {
+export function drawHud(ctx: CanvasRenderingContext2D, game: Game, view: View, layout: HudLayout, input: InputManager, levelName: string, totalCheese: number) {
   const { w } = view;
 
   // top bar: level name, time, spotted count
@@ -712,7 +712,7 @@ export function drawHud(ctx: CanvasRenderingContext2D, game: Game, view: View, l
   ctx.lineWidth = 3;
   const t = game.stats.time;
   const timeStr = `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
-  const label = `${levelName}   ${timeStr}   👁 ${game.stats.spotted}`;
+  const label = `${levelName}   ${timeStr}   👁 ${game.stats.spotted}   🧀 ${totalCheese}`;
   ctx.strokeText(label, w / 2, 24);
   ctx.fillText(label, w / 2, 24);
 

@@ -14,7 +14,7 @@ const DEBUG = new URLSearchParams(location.search).get('debug') === '1';
 const input = new InputManager();
 input.attach(canvas);
 
-interface Progress { unlocked: number; stars: number[] }
+interface Progress { unlocked: number; stars: number[]; totalCheese: number }
 const SAVE_KEY = 'cheese-heist-progress-v1';
 
 function loadProgress(): Progress {
@@ -25,7 +25,7 @@ function loadProgress(): Progress {
       if (typeof p.unlocked === 'number' && Array.isArray(p.stars)) return p;
     }
   } catch { /* corrupted save -> start fresh */ }
-  return { unlocked: 1, stars: [] };
+  return { unlocked: 1, stars: [], totalCheese: 0 };
 }
 function saveProgress(p: Progress) {
   try {
@@ -208,7 +208,7 @@ function drawCompleteOverlay(g: Game) {
   ctx.fillRect(0, 0, cssW, cssH);
   const w = Math.min(320, cssW - 32), bh = 46;
   const hasNext = levelIdx + 1 < LEVELS.length;
-  const h = 210 + (hasNext ? 3 : 2) * (bh + 10) + 10;
+  const h = 234 + (hasNext ? 3 : 2) * (bh + 10) + 10;
   const x = cssW / 2 - w / 2, y = cssH / 2 - h / 2;
   panel(x, y, w, h);
   ctx.textAlign = 'center';
@@ -225,12 +225,13 @@ function drawCompleteOverlay(g: Game) {
   ctx.fillText(`time  ${timeStr}`, cssW / 2, y + 116);
   ctx.fillText(`spotted  ${g.stats.spotted} time${g.stats.spotted === 1 ? '' : 's'}`, cssW / 2, y + 140);
   ctx.fillText(`items used  ${g.stats.itemsUsed}`, cssW / 2, y + 164);
+  ctx.fillText(`🧀 total cheese  ${progress.totalCheese}`, cssW / 2, y + 188);
   if (g.stats.spotted > 0) {
     ctx.font = '500 12px system-ui, sans-serif';
     ctx.fillStyle = 'rgba(255,255,255,0.45)';
-    ctx.fillText('3★ = never spotted', cssW / 2, y + 186);
+    ctx.fillText('3★ = never spotted', cssW / 2, y + 210);
   }
-  let by = y + 204;
+  let by = y + 228;
   if (hasNext) {
     buttons.push({ id: 'next', label: 'Next level', x: x + 20, y: by, w: w - 40, h: bh });
     by += bh + 10;
@@ -315,7 +316,7 @@ function frame(now: number) {
 
     drawWorld(ctx, game, view, DEBUG);
     if (game.phase === 'play' && overlay === 'none') {
-      drawHud(ctx, game, view, input.layout, input, LEVELS[levelIdx].name);
+      drawHud(ctx, game, view, input.layout, input, LEVELS[levelIdx].name, progress.totalCheese);
     }
     if (game.wipeT >= 0) drawWipe(ctx, view, game.wipeT);
     if (game.phase === 'hint') drawHintOverlay();
@@ -326,6 +327,7 @@ function frame(now: number) {
         savedThisWin = true;
         progress.stars[levelIdx] = Math.max(progress.stars[levelIdx] ?? 0, game.stars());
         progress.unlocked = Math.max(progress.unlocked, Math.min(LEVELS.length, levelIdx + 2));
+        progress.totalCheese = (progress.totalCheese ?? 0) + 1;
         saveProgress(progress);
       }
       if (game.wonT > 1.1) overlay = 'complete';
