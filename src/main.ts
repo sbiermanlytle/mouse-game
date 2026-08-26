@@ -1,3 +1,4 @@
+// A top-down maze game where you guide a mouse through increasingly tricky levels to steal cheese.
 // Bootstrap, screens (menu / play / pause / level complete), progress
 // persistence and the main loop.
 
